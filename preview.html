@@ -53,7 +53,7 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      margin: 3em auto 1em auto;
+      margin: 0 auto 1em auto;
     }
     .matrix_field {
     	margin-top: 1em;
@@ -114,6 +114,18 @@
       box-shadow: 0 0 0 1px rgba(158, 158, 158, 0.25);
     }
 
+    .matrix_btn {
+    	margin: 2px;
+    	display: inline-block;
+    	text-decoration: none;
+    	color: #D7D7D7; /*#D7D7D7 #2D2E36*/
+    	background-color: #26262D;
+    	padding: 0.5em 0.5em;
+    	transition: 0.2s;
+    	border-radius: 0.25rem;
+    	user-select: none;
+    	cursor: pointer;
+    }
     .btn {
     	/*margin: 0 0.25em 0 0;*/
     	margin: 2px;
@@ -125,7 +137,7 @@
     	transition: 0.2s;
     	border-radius: 0.25rem;
     }
-    .btn:hover {
+    .btn:hover, .matrix_btn:hover, .active {
     	color: black;	/*#DCDCDC*/
     	background-color: #fff;	/*#2B2C34 #373741 #00a898*/
     }
@@ -143,7 +155,7 @@
     	/*margin-bottom: 0.5em;*/
     	font-weight: 500;
     	padding-top: 1em;
-    	color: #bfbfbf; /*#8399ac - голубой*/
+    	color: #919191; /*#8399ac - голубой*/
     	text-align: center;
     	/*transition: 0.2s;*/
     }
@@ -180,7 +192,7 @@
 		}
 
 		.cross_symbol {
-			color: #bfbfbf;
+			color: #919191;	/*color: #919191; #bfbfbf*/
 			display: none;
 			font-size: 2em;
 			font-weight: 500;
@@ -189,7 +201,7 @@
 			/*transition: color 0.2s ease-in-out;*/
 			transition: 0.2s;
 		}
-		.cross_symbol:hover {
+		.cross_symbol:hover, .d_block span:hover {
 			color: #fff;
 		}
 		.logo_img {
@@ -204,6 +216,27 @@
 			justify-content: center;
 			/*align-items: baseline*/
 		}
+		.d_block {
+			max-width: 400px;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			margin: 1em auto 0 auto;
+			align-items: center;
+		}
+		.d_block span {
+			font-size: 2em;
+			padding-bottom: 0.25em;
+			margin-right: -0.95em;
+			margin-left: 0.25em;
+
+			color: #919191;
+			font-weight: 500;
+			user-select: none;
+			cursor: pointer;
+			/*transition: color 0.2s ease-in-out;*/
+			transition: 0.2s;
+		}
 </style>
 <body>
 	<div class="wrapper">
@@ -212,6 +245,14 @@
 			<h1 class="main_title">SuperMatrix</h1>
 		</div>
 		<a href="#" class="subtitle">by Andrew Sushko</a>
+
+		<div class="d_block">
+			<a href="#" class="matrix_btn active">Matrix A</a>
+			<!--<a href="#" class="matrix_btn">Matrix B</a>
+			<a href="#" class="matrix_btn">Matrix C</a>
+			<a href="#" class="matrix_btn">Matrix D</a>-->
+			<span class="btn_plus">+</span>
+		</div>
 
     	<div class="main_field">
     		<div class="text01">
@@ -275,7 +316,7 @@
 				}
 				matrix.push(row_matrix);
 			}
-			console.log(matrix);
+			// console.log(matrix);
 
 
 			function createNewElem(flag) {
@@ -329,7 +370,7 @@
 			document.addEventListener('keydown', function(event) {
   				if (event.code == 'Enter' && document.querySelector(`#matrix_elem_${id_count}`) === document.querySelector(':focus')) {
   					// matrix.push(+document.querySelector(`#matrix_elem_${id_count}`).value);
-  					console.log(matrix);
+  					// console.log(matrix);
     				createNewElem(true);
   				}
 			});
@@ -349,7 +390,7 @@
   		// Динамическая замена всего
   		document.querySelector('.matrix_field').oninput = function(event) {
 			  let elem = event.target; // где был клик?
-			  console.log(document.getElementById('m_field').getElementsByTagName('input').length);
+			  // console.log(document.getElementById('m_field').getElementsByTagName('input').length);
 			  /* кусок не работает if (elem.className != 'matrix_elem') return;  не элемент матрицы? - тогда не интересует*/
 
 			  // Добавляет, удаляет крестик на странице  || elem.value != '' && isNaN(elem.value) == false
@@ -383,7 +424,7 @@
 							row_matrix = [];
 						for (j = 0; j < matrix[i].length; j++) {
 							if (matrix[i][j] != 'n') {
-								console.log('add complete');
+								// console.log('add complete');
 								row_matrix.push(matrix[i][j]);
 							}
 							else {
@@ -421,6 +462,18 @@
 				return str2;
 			}
 
+
+			dBLock_matrix = 'ABCDEFG';
+			let dBlock_count = 1;
+			document.querySelector('.btn_plus').addEventListener('click', e => {
+				// Создание инпута нового элемента матрицы
+				let new_matrix_elem = document.createElement('a');
+				new_matrix_elem.className = "matrix_btn";	
+				new_matrix_elem.innerHTML = `Matrix ${dBLock_matrix[dBlock_count]}`;
+				dBlock_count++;
+
+				document.querySelector('.btn_plus').before(new_matrix_elem);
+			})
 
 			// Копирование матрицы в буфер
 			document.querySelector('.copy').addEventListener('click', e => {
