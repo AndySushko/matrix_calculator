@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Request</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            border: 0;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --hue: 223;
+            --bg: hsl(var(--hue),90%,10%);
+            --fg: hsl(var(--hue),90%,90%);
+            --primary: hsl(var(--hue),90%,50%);
+            --trans-dur: 0.3s;
+            --trans-timing: cubic-bezier(0.65,0,0.35,1);
+            font-size: calc(16px + (24 - 16) * (100vw - 320px) / (2560 - 320));
+        }
+        body,
+        input {
+            color: var(--fg);
+        }
+        body {
+            background-color: var(--bg);
+            font-family: "Montserrat", sans-serif;
+            text-align: center;
+            height: 100vh;
+            transition:
+                background-color var(--trans-dur),
+                color var(--trans-dur);
+        }
+        main {
+            margin: auto;
+            padding: 1.5em 0;
+            width: 100%;
+        }
+        form {
+            margin: auto;
+            max-width: 30em;
+            width: calc(100% - 3em);
+        }
+        .border_form {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+
+
+        /*input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, {
+            border: 1px solid green;
+            -webkit-text-fill-color: green;
+            -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }*/
+        input[type="text"] {
+            width: 100%;
+            height: 8vh;
+            border-radius: 0.75em;
+            /*background-color: hsla(0,0%,100%,0.1);*/
+            background-color: hsl(var(--hue), 10%, 50%, 0.2);
+            padding: 0 2em; 
+            font-size: 1em;
+            box-shadow: 0 0 0 30px #051F61 inset !important; /*#192542*/
+            /*-webkit-text-fill-color: #fff;*/
+            color: #fff;
+            outline:none;
+            border: 1px solid blue;
+        }
+        input[type="text"]:focus-visible {
+            -webkit-text-fill-color: #fff;
+        }
+        input[type="text"]:not(:focus-visible) {
+            -webkit-text-fill-color: var(--fg);
+        }*/
+
+
+        label,
+        input[type="radio"] {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        label {
+            /*background-color: hsla(0,0%,100%,0);*/
+            background-color: hsla(var(--hue),90%,30%,0);
+            border-radius: 0.75em;
+            display: flex;
+            align-items: center;
+            padding: 1.5em;
+            transition: background-color var(--trans-dur);
+            height: 10vh;
+        }
+        .border_label {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+        .border_label_description {
+            font-size: 0.6em;
+            margin: 0.5em 0;
+        }
+        input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+        }
+        input[type="radio"]:checked:before,
+        input[type="radio"]:checked:after {
+            transform: scale(1);
+        }
+        label:has(input[type="radio"]:checked) .border_label_title {
+            color: #fff;
+        }
+
+        label:has(input[type="radio"]:checked),
+        label:has(input[type="radio"]:not(:checked)):hover {
+            background-color: hsla(var(--hue),90%,30%,0.5);
+        }
+        .selection {
+            border-radius: 0.75em;
+            box-shadow: 0 0 0 0.125em var(--primary) inset;
+            display: none;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform var(--trans-dur) var(--trans-timing);
+        }
+        .selection, .border_label {
+            width: 50%;
+            height: 20vh;
+        }
+        label:has(input[type="radio"]:checked) ~ .selection {
+            animation: fade-in var(--trans-dur) var(--trans-timing);
+            display: inherit;
+        }
+        label:nth-of-type(2):has(input[type="radio"]:checked) ~ .selection {
+            transform: translateX(100%);
+        }
+        label:nth-of-type(3):has(input[type="radio"]:checked) ~ .selection {
+            transform: translateX(200%);
+        }
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* Animations */
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+
+        .btn {
+            font-size: 0.8em;
+            padding: 1.25em 2em;
+            color: #FFF;          
+            background-color: hsla(var(--hue), 90%, 30%, 0.8);
+            cursor: pointer;
+            transition: background-color var(--trans-dur);
+            border-radius: 0.75em;
+        }
+        .btn:hover {
+            background-color: hsla(var(--hue), 90%, 30%, 0.5);
+            color: var(--trans-dur);
+        }
+        #sendRequest {
+            margin-top: 2em;
+        }
+        h2 {
+            font-size: 1.2em;
+            /*margin: 0.5em 0;*/
+            margin: 1em 0;
+        }
+        #response {
+            padding: 0 1.5em;
+        }
+        .analize_block {
+            padding: 0 1.5em;
+            background-color: #2525c8;  
+            max-width: 30em;
+            margin: 1.5em auto 0 auto;
+            display: flex;
+            justify-content: start;
+            border-radius: 0.75em;
+        }
+
+
+
+
+        @media screen and (max-width: 750px) {
+            /*label:nth-of-type(2):has(input[type="radio"]:checked) ~ .selection {
+                transform: translateY(100%);
+            }
+            label:nth-of-type(3):has(input[type="radio"]:checked) ~ .selection {
+                transform: translateY(200%);
+            }*/
+            input[type="text"] {
+                height: 6vh;
+            }
+            .selection, .border_label {
+                /*width: 100%;*/
+                height: 14vh;
+            }
+            h2 {
+                margin: 0.5em 0;
+            }
+            .category_title {
+                margin: 1em 0;
+            }
+            label {
+                padding: 0;
+            }
+            .btn {
+                font-size: 1em;
+            }
+            .analize_block {
+                padding: 1em 1.5em;
+            }
+            .timeline__item:not(:last-child):before {
+                left: 2.225em!important;
+            }
+            .timeline__item-body {
+                margin-inline-end: 0!important;
+            }
+        }
+
+
+
+        .timeline {
+            margin: auto;
+            padding: 0 1.5em;
+            width: 100%;
+            max-width: 36em;
+            text-align: start;
+            margin-top: 2em;
+        }
+        .timeline__arrow {
+            background-color: transparent;
+            border-radius: 0.25em;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-inline-end: 0.25em;
+            outline: transparent;
+            width: 2.5em;
+            height: 2.5em;
+            transition:
+                background-color calc(var(--trans-dur) / 2) linear,
+                color var(--trans-dur);
+            -webkit-appearance: none;
+            appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            color: #fff;
+            margin-left: 1em;
+        }
+        .timeline__arrow:focus-visible,
+        .timeline__arrow:hover {
+            background-color: hsl(var(--hue),10%,50%,0.4);
+        }
+        .timeline__arrow-icon {
+            display: block;
+            pointer-events: none;
+            transform: rotate(-90deg);
+            transition: transform var(--trans-dur) var(--trans-timing);
+            width: 100%;
+            height: auto;
+        }
+        .timeline__date {
+            font-size: 0.833em;
+            line-height: 2.4;
+        }
+        .timeline__item {
+            position: relative;
+            padding-bottom: 2.25em;
+        }
+        [dir="rtl"] .timeline__arrow-icon {
+            transform: rotate(90deg);
+        }
+        [dir="rtl"] .timeline__item:not(:last-child):before {
+            right: 2.625em;
+            left: auto;
+            transform: translateX(50%);
+        }
+        .timeline__item-header {
+            display: flex;
+            align-items: center;
+        }
+        .timeline__item-body {
+            border-radius: 0.375em;
+            overflow: hidden;
+            margin-top: 0.5em;
+            margin-inline-end: 4em;
+            height: 0;
+        }
+        .timeline__item-body-content {
+            background-color: hsl(var(--hue),10%,50%,0.2);
+            opacity: 0;
+            padding: 0.5em 0.75em;
+            visibility: hidden;
+            transition:
+                opacity var(--trans-dur) var(--trans-timing),
+                visibility var(--trans-dur) steps(1,end);
+        }
+        .timeline__title {
+            font-size: 1em;
+            line-height: 1.333;
+        }
+        /* Expanded state */
+        .timeline__item-body--expanded {
+            height: auto;
+        }
+        .timeline__item-body--expanded .timeline__item-body-content {
+            opacity: 1;
+            font-size: 0.8em;
+            visibility: visible;
+            transition-delay: var(--trans-dur), 0s;
+        }
+        .timeline__arrow[aria-expanded="true"] .timeline__arrow-icon {
+            transform: rotate(0);
+        }
+        .bold_span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+    <form onsubmit="return false;">
+        <h2>Вставьте ссылку на видео</h2>
+
+            <label>
+                <input type="text" id="link" placeholder="ссылка на видео" required>
+            </label>
+
+            <h2 class="category_title">Выберете категорию фильтра</h2>
+            <div class="border_form">
+                <label class="border_label">
+                    <input type="radio" name="inventor" value="12" required checked>
+                    <div class="truncate">
+                        <h3 class="border_label_title">12+</h3>
+                        <div class="border_label_description">Фильтр недопустимых слов</div>
+                        <div class="border_label_description">Фильтр табачных изделий</div>
+                    </div>
+                </label>
+                <label class="border_label">
+                    <input type="radio" name="inventor" value="16" required>
+                    <div class="truncate">
+                        <h3 class="border_label_title">16+</h3>
+                        <div class="border_label_description_block">
+                            <div class="border_label_description">Фильтр табачных изделий</div>
+                        </div>
+                    </div>
+                </label>
+                <div class="selection"></div>
+            </div>
+
+        <button id="sendRequest" class="btn">Отправить на анализ</button>
+    </form>
+</main>
+
+
+<svg display="none">
+    <symbol id="arrow">
+        <polyline points="7 10,12 15,17 10" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+    </symbol>
+</svg>
+<h2 id="analyze_title">Результаты анализа видео</h2>
+<div id="timeline" class="timeline"></div>
+
+
+
+
+    <script>
+        document.getElementById('sendRequest').addEventListener('click', () => {
+            fetch('/api/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    link: document.getElementById("link").value,
+                    // getElementByName
+                    // age: document.getElementById("age").value,
+                 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                document.getElementById('response').innerText = JSON.stringify(data['response'], null, 2);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'Error: ' + error;
+            });
+        });
+
+
+
+
+        window.addEventListener("DOMContentLoaded",() => {
+    const ctl = new CollapsibleTimeline("#timeline");
+});
+
+class CollapsibleTimeline {
+    constructor(el) {
+        this.el = document.querySelector(el);
+
+        this.init();
+    }
+    init() {
+        this.el?.addEventListener("click",this.itemAction.bind(this));
+    }
+    animateItemAction(button,ctrld,contentHeight,shouldCollapse) {
+        const expandedClass = "timeline__item-body--expanded";
+        const animOptions = {
+            duration: 300,
+            easing: "cubic-bezier(0.65,0,0.35,1)"
+        };
+
+        if (shouldCollapse) {
+            button.ariaExpanded = "false";
+            ctrld.ariaHidden = "true";
+            ctrld.classList.remove(expandedClass);
+            animOptions.duration *= 2;
+            this.animation = ctrld.animate([
+                { height: `${contentHeight}px` },
+                { height: `${contentHeight}px` },
+                { height: "0px" }
+            ],animOptions);
+        } else {
+            button.ariaExpanded = "true";
+            ctrld.ariaHidden = "false";
+            ctrld.classList.add(expandedClass);
+            this.animation = ctrld.animate([
+                { height: "0px" },
+                { height: `${contentHeight}px` }
+            ],animOptions);
+        }
+    }
+    itemAction(e) {
+        const { target } = e;
+        const action = target?.getAttribute("data-action");
+        const item = target?.getAttribute("data-item");
+
+        if (action) {
+            const targetExpanded = action === "expand" ? "false" : "true";
+            const buttons = Array.from(this.el?.querySelectorAll(`[aria-expanded="${targetExpanded}"]`));
+            const wasExpanded = action === "collapse";
+
+            for (let button of buttons) {
+                const buttonID = button.getAttribute("data-item");
+                const ctrld = this.el?.querySelector(`#item${buttonID}-ctrld`);
+                const contentHeight = ctrld.firstElementChild?.offsetHeight;
+
+                this.animateItemAction(button,ctrld,contentHeight,wasExpanded);
+            }
+
+        } else if (item) {
+            const button = this.el?.querySelector(`[data-item="${item}"]`);
+            const expanded = button?.getAttribute("aria-expanded");
+
+            if (!expanded) return;
+
+            const wasExpanded = expanded === "true";
+            const ctrld = this.el?.querySelector(`#item${item}-ctrld`);
+            const contentHeight = ctrld.firstElementChild?.offsetHeight;
+
+            this.animateItemAction(button,ctrld,contentHeight,wasExpanded);
+        }
+    }
+}
+
+// Получаем элемент по его тегу
+        // const tagElement = document.getElementById('timeline');
+        // const analyzeTitle = document.getElementById('analyze_title');
+
+        // while (tagElement.childNodes.length === 0) {
+        //     analyzeTitle.innerHTML = 'Загрузка...';
+        // }
+        // analyzeTitle.innerHTML = 'Результаты анализа видео';
+    </script>
+</body>
+</html>
+
+
+<!-- <input type="text" id="age" placeholder="age"><br>
+    <input type="text" id="link" placeholder="link"><br>
+    <button id="sendRequest" class="btn">Отправить на анализ</button> -->
